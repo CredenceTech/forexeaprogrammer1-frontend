@@ -1,7 +1,7 @@
 import { useState } from "react";
 const item = localStorage.getItem('user');
 const user = item ? JSON.parse(item) : '';
-export const devUrl = "https://0c84-2402-a00-172-bd1e-48a6-34d3-339-2c52.ngrok-free.app/api/"
+export const devUrl = "https://api.dpafx.com/api/"
 export const token = user?.api_key
 
 
