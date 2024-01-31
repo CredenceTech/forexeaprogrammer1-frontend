@@ -1,21 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
-import { devUrl, token, useLocalStorage } from './utils'
+import { devUrl, } from './utils'
 const Users = () => {
-
-    const [keywordValue, setKeywordValue] = useState("");
-
-    const dateFoemate = (date_time) => {
-        const dateObject = new Date(date_time);
-
-        // Extract year, month, and day components
-        const year = dateObject.getFullYear();
-        const month = String(dateObject.getMonth() + 1).padStart(2, '0');
-        const day = String(dateObject.getDate()).padStart(2, '0');
-
-        // Create the formatted date string
-        return `${year}-${month}-${day}`;
-    }
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -28,7 +14,6 @@ const Users = () => {
     const user = item ? JSON.parse(item) : '';
     const [users, setUsers] = useState(null);
 
-    const [name] = useLocalStorage('user')
     useEffect(() => {
         setLocalPage(currentPage);
     }, [currentPage]);
@@ -56,21 +41,12 @@ const Users = () => {
 
 
     useEffect(() => {
-        fetchUsers({ search: keywordValue, pageNumber: currentPage, pageSize: itemsPerPage });
+        fetchUsers({ pageNumber: currentPage, pageSize: itemsPerPage });
     }, []);
-    useEffect(() => {
-        fetchUsers({ search: keywordValue, pageNumber: currentPage, pageSize: itemsPerPage });
-    }, [keywordValue]);
-
 
 
     useEffect(() => {
-        setCurrentPage(1)
-    }, [keywordValue])
-
-
-    useEffect(() => {
-        fetchUsers({ search: keywordValue, pageNumber: currentPage, pageSize: itemsPerPage })
+        fetchUsers({ pageNumber: currentPage, pageSize: itemsPerPage })
     }, [currentPage]);
 
     // Fetch users from API
@@ -174,6 +150,8 @@ const Users = () => {
                                                 </td>
                                             </tr>)
                                     })}
+
+                                    {users?.data.length === 0 ? <p className='text-center my-6'>No Any User To Show Here</p> : null}
                                 </tbody>
                             </table>
                         </div>
@@ -181,43 +159,45 @@ const Users = () => {
                 </div>
 
                 <>
-                    <div className='flex justify-end'>
-                        <nav aria-label="Pagination" className="inline-flex  -space-x-px rounded-md mt-3 shadow-sm bg-gray-300 dark:text-gray-100">
+                    {users?.data.length >= 1 ?
+                        <div className='flex justify-end'>
+                            <nav aria-label="Pagination" className="inline-flex  -space-x-px rounded-md mt-3 shadow-sm bg-gray-300 dark:text-gray-100">
 
-                            <button onClick={previousPage} className={`inline-flex items-center ${localPage === 1 ? 'disable' : ''} px-2 py-2 text-sm font-semibold border rounded-l-md dark:border-gray-700`}>
-                                <span className="sr-only">Previous</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-5 h-5">
-                                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                                </svg>
-                            </button>
-                            {localPage > 1 && (
-                                <button onClick={() => goToPage(1)} aria-current="page" className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage === 1 ? 'bg-indigo-400' : ''}`}>1</button>
-                            )}
-                            {localPage > 3 && (
-                                <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700">...</button>
-                            )}
-                            {localPage > 2 && (
-                                <button onClick={() => goToPage(localPage - 1)} className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage - 1 === currentPage ? 'bg-indigo-400' : ''}`}>{localPage - 1}</button>
-                            )}
-                            <button className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage === currentPage ? 'bg-indigo-400' : ''}`}>{localPage}</button>
+                                <button onClick={previousPage} className={`inline-flex items-center ${localPage === 1 ? 'disable' : ''} px-2 py-2 text-sm font-semibold border rounded-l-md dark:border-gray-700`}>
+                                    <span className="sr-only">Previous</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-5 h-5">
+                                        <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"></path>
+                                    </svg>
+                                </button>
+                                {localPage > 1 && (
+                                    <button onClick={() => goToPage(1)} aria-current="page" className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage === 1 ? 'bg-indigo-400' : ''}`}>1</button>
+                                )}
+                                {localPage > 3 && (
+                                    <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700">...</button>
+                                )}
+                                {localPage > 2 && (
+                                    <button onClick={() => goToPage(localPage - 1)} className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage - 1 === currentPage ? 'bg-indigo-400' : ''}`}>{localPage - 1}</button>
+                                )}
+                                <button className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage === currentPage ? 'bg-indigo-400' : ''}`}>{localPage}</button>
 
-                            {localPage < totalPages - 1 && (
-                                <button onClick={() => goToPage(localPage + 1)} className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage + 1 === currentPage ? 'bg-indigo-400' : ''}`}>{localPage + 1}</button>
-                            )}
-                            {localPage < totalPages - 2 && (
-                                <button className="inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700">...</button>
-                            )}
-                            {localPage < totalPages && (
-                                <button onClick={() => goToPage(totalPages)} className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${totalPages === currentPage ? 'bg-indigo-400' : ''}`}>{totalPages}</button>
-                            )}
-                            <button onClick={nextPage} className={`inline-flex items-center px-2 py-2 text-sm ${localPage === totalPages ? 'disable' : ''} font-semibold border rounded-r-md dark:border-gray-700`}>
-                                <span className="sr-only">Next</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-5 h-5">
-                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
-                                </svg>
-                            </button>
-                        </nav>
-                    </div>
+                                {localPage < totalPages - 1 && (
+                                    <button onClick={() => goToPage(localPage + 1)} className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${localPage + 1 === currentPage ? 'bg-indigo-400' : ''}`}>{localPage + 1}</button>
+                                )}
+                                {localPage < totalPages - 2 && (
+                                    <button className="inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700">...</button>
+                                )}
+                                {localPage < totalPages && (
+                                    <button onClick={() => goToPage(totalPages)} className={`inline-flex items-center px-4 py-2 text-sm font-semibold border dark:border-gray-700 ${totalPages === currentPage ? 'bg-indigo-400' : ''}`}>{totalPages}</button>
+                                )}
+                                <button onClick={nextPage} className={`inline-flex items-center px-2 py-2 text-sm ${localPage === totalPages ? 'disable' : ''} font-semibold border rounded-r-md dark:border-gray-700`}>
+                                    <span className="sr-only">Next</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-5 h-5">
+                                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+                                    </svg>
+                                </button>
+                            </nav>
+                        </div>
+                        : null}
                 </>
             </div>
 
