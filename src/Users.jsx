@@ -56,8 +56,9 @@ const Users = () => {
                 .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
                 .join('&');
 
+
             // Append the query string to the URL
-            const url = `${devUrl}users/list?${queryString}`;
+            const url = `${import.meta.env.VITE_APP_BACKEND_URL}/users/list?${queryString}`;
             const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${user?.api_key}`,
